@@ -108,33 +108,36 @@ class Game:
         # just find starting and ending row/col vals,
         # and add 1 to each until end.  Reset count on mismatch.
         elif direction == Direction.DIAGONAL_RIGHT:
-            starting_row = r - c if r > c else 0
-            starting_col = c - r if c > r else 0
-            last_row     = r + (self.MAX_COLS - c - 1) if r + (self.MAX_COLS - c - 1) < self.MAX_ROWS else self.MAX_ROWS - 1
-            last_col     = self.MAX_ROWS - r - 1 + c if self.MAX_ROWS - r - 1 + c < self.MAX_ROWS else self.MAX_ROWS - 1
-
-            for i in range(0, last_row - starting_row):
-                print("starting_row + i: " + str(starting_row+i))
-                print("starting_col + i: " + str(starting_col+i))
-                if self.board[starting_row + i][starting_col + i] == color:
+            row = r - c if r > c else 0
+            col = c - r if c > r else 0
+            
+            while (row < self.MAX_ROWS and col < self.MAX_COLS):
+                if self.board[row][col] == color:
                     count += 1
+                    if count == 4:
+                        break
                 else:
                     count = 0
+
+                row += 1
+                col += 1
 
         elif direction == Direction.DIAGONAL_LEFT:
-            starting_row = r + c if r+c < self.MAX_ROWS else self.MAX_ROWS - 1
-            starting_col = r + c if r+c < self.MAX_COLS else self.MAX_COLS - 1
-            last_row     = r - c if r > c else 0
-            last_col     = c - r if c > r else 0
-
+            row = r + c if r+c < self.MAX_ROWS else self.MAX_ROWS - 1
+            col = c - (self.MAX_ROWS - r - 1) if c - (self.MAX_ROWS - r - 1) > 0 else 0
+            
             # just want to decrement both r and c by 1 n times where
             # n = starting row - last row
-            for i in range(0, starting_row - last_row):
-                if self.board[starting_row - i][starting_col - i] == color:
+            while (row > 0 and col < self.MAX_COLS):
+                if self.board[row][col] == color:
                     count += 1
+                    if count == 4:
+                        break
                 else:
                     count = 0
-
+                # starting from left and going to the right...
+                row -= 1
+                col += 1
                     
         if count == 4:
             return True
